@@ -5,9 +5,9 @@ resource "google_compute_instance" "instance" {
   zone         = "asia-east1-b"
 
   labels = {
-    dept = "test"
-    env  = "prod"
-    product = "prod"
+    aaa = "test1"
+    bbb  = "test2"
+    ccc = "test3"
   }
 
   boot_disk {

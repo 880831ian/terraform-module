@@ -41,7 +41,7 @@ resource "google_compute_instance" "instance" {
           size = 50
     }
   }
-  
+
 .... 其他省略不寫 ....
 }
 ```
@@ -65,7 +65,7 @@ resource "google_compute_instance" "instance" {
         size = 50
     }
   }
-  
+
 .... 其他省略不寫 ....
 }
 ```
@@ -82,9 +82,9 @@ resource "google_compute_instance" "instance" {
   zone         = "asia-east1-b"
 
   labels = {
-    dept = "test"
-    env  = "prod"
-    product = "prod"
+    aaa = "test1"
+    bbb = "test2"
+    ccc = "test3"
   }
 
   boot_disk {
@@ -93,7 +93,7 @@ resource "google_compute_instance" "instance" {
       size = 50
     }
   }
-  
+
 .... 其他省略不寫 ....
 }
 ```
@@ -114,7 +114,6 @@ resource "google_compute_instance" "instance" {
 
 4. module 版本控制：將 Terraform 程式封裝為 module 後，可以使用 git 對其進行版本控制。可以更輕鬆地協作和共享 module (可以將 module 與 Terraform 分別存放，並使用對應 tag or 分支來做開發 )。
 
-
 ### 檔案說明
 
 <br>
@@ -125,7 +124,7 @@ resource "google_compute_instance" "instance" {
 
 <br>
 
- - 架構圖
+- 架構圖
 
 ```
 .
@@ -150,6 +149,7 @@ resource "google_compute_instance" "instance" {
 
 6 directories, 12 files
 ```
+
 module 資料夾：放我們 module 設定 (這邊範例是放 gce)
 
 projects 資料夾：放我們不同服務、不同環境設定 (這邊為了簡化，範例只以不同環境為例)
@@ -168,7 +168,7 @@ resource "google_compute_instance" "instance" {
     name         = var.instance_name
     machine_type = var.machine_type
     zone         = var.instance_zone
-    tags = var.instance_tags   
+    tags = var.instance_tags
     labels = var.instance_labels
 
     boot_disk {
@@ -184,7 +184,7 @@ resource "google_compute_instance" "instance" {
       content {
         device_name = var.attached_disk_name
         mode = var.attached_disk_mode
-        source = var.attached_disk_source         
+        source = var.attached_disk_source
       }
     }
 
@@ -226,7 +226,7 @@ dynamic "attached_disk" {
       content {
         device_name = var.attached_disk_name
         mode = var.attached_disk_mode
-        source = var.attached_disk_source         
+        source = var.attached_disk_source
       }
    }
 ```
@@ -305,7 +305,7 @@ variable "attached_disk_mode" {
   validation {
     condition     = contains(["READ_WRITE", "READ_ONLY"], var.attached_disk_mode)
     error_message = "不符合附加磁碟模式的值，請輸入 READ_WRITE 或 READ_ONLY"
-  }    
+  }
 }
 
 variable "attached_disk_source" {
@@ -383,7 +383,7 @@ variable "attached_disk_mode" {
   validation {
     condition     = contains(["READ_WRITE", "READ_ONLY"], var.attached_disk_mode)
     error_message = "不符合附加磁碟模式的值，請輸入 READ_WRITE 或 READ_ONLY"
-  }    
+  }
 }
 ```
 
@@ -405,9 +405,9 @@ variable "attached_disk_mode" {
 
 ```
 {
-    "dept" : "test1",
-    "env" : "test2",
-    "product" : "test3"
+    "aaa" : "test1",
+    "bbb" : "test2",
+    "ccc" : "test3"
 }
 ```
 
@@ -432,7 +432,7 @@ projects 我這邊只示範 prod 的部分
 - projects/prod/main.tf
 
 ```
-module "google_compute_instance" {
+module "ian-test" {
   source = "../../module/google_compute_instance"
 
   project_id = "馬賽克"
@@ -441,9 +441,9 @@ module "google_compute_instance" {
   instance_zone = "asia-east1-b"
   instance_tags = []
   instance_labels = {
-    "dept" = "test"
-    "env" = "prod"
-    "product" = "prod"
+    "aaa" = "test1"
+    "bbb" = "test2"
+    "ccc" = "test3"
   }
   boot_disk_image_name    = "debian-cloud/debian-10"
   boot_disk_size = "50"
@@ -460,7 +460,7 @@ module "google_compute_instance" {
 
 <br>
 
-這邊我們可以定義要使用 module 的叫什麼，這邊我就取名 google_compute_instance，然後他會去 `source "../../module/google_compute_instance"`，也就是我們剛剛在上面先挖洞的模板，底下就開始帶入我們在 variables.tf 有設定的參數。這邊比較要注意的是，在 main.tf、variables.tf 有使用的變數設定，都必須要寫在個別資源 tf 的檔案裡面，沒有的就帶入對應資料型態的空值，例如 `instance_tags`、`metadata`、`resource_policies` 等等。
+這邊我們可以定義要使用 module 的叫什麼，這邊我就取名 google_compute_instance，然後他會去 `source "../../module/ian-test"`，也就是我們剛剛在上面先挖洞的模板，底下就開始帶入我們在 variables.tf 有設定的參數。這邊比較要注意的是，在 main.tf、variables.tf 有使用的變數設定，都必須要寫在個別資源 tf 的檔案裡面，沒有的就帶入對應資料型態的空值，例如 `instance_tags`、`metadata`、`resource_policies` 等等。
 
 <br>
 
@@ -477,7 +477,6 @@ module "google_compute_instance" {
 <br>
 
 ![圖片](https://raw.githubusercontent.com/880831ian/terraform-module/master/images/1.png)
-
 
 ![圖片](https://raw.githubusercontent.com/880831ian/terraform-module/master/images/2.png)
 
@@ -507,7 +506,6 @@ module "google_compute_instance" {
 
 ![圖片](https://raw.githubusercontent.com/880831ian/terraform-module/master/images/5.png)
 
-
 ![圖片](https://raw.githubusercontent.com/880831ian/terraform-module/master/images/6.png)
 
 <br>
@@ -524,7 +522,6 @@ module "google_compute_instance" {
 
 ![圖片](https://raw.githubusercontent.com/880831ian/terraform-module/master/images/7.png)
 
-
 ![圖片](https://raw.githubusercontent.com/880831ian/terraform-module/master/images/8.png)
 
 <br>
@@ -534,7 +531,6 @@ apply 看到的與 plan 顯示的一樣，使用 module 建立的資料格式會
 <br>
 
 ![圖片](https://raw.githubusercontent.com/880831ian/terraform-module/master/images/9.png)
-
 
 ![圖片](https://raw.githubusercontent.com/880831ian/terraform-module/master/images/10.png)
 
@@ -568,7 +564,7 @@ resource "google_compute_instance" "instance" {
 <br>
 
 ```
-module "google_compute_instance" {
+module "ian-test" {
   source = "../../module/google_compute_instance"
 
   project_id = ""
@@ -594,7 +590,7 @@ module "google_compute_instance" {
 
 <br>
 
-再使用 `terraform import module.google_compute_instance.google_compute_instance.instance [專案 ID]/[機器地區]/[機器名稱]` 來匯入狀態檔案。(這邊要記得依照你 module 設定的名稱帶入)
+再使用 `terraform import module.ian-test.google_compute_instance.instance [專案 ID]/[機器地區]/[機器名稱]` 來匯入狀態檔案。(這邊要記得依照你 module 設定的名稱帶入)
 
 <br>
 

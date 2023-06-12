@@ -1,4 +1,4 @@
-module "google_compute_instance" {
+module "ian-test" {
   source = "../../module/google_compute_instance"
 
   project_id = "馬賽克"
@@ -7,9 +7,9 @@ module "google_compute_instance" {
   instance_zone = "asia-east1-b"
   instance_tags = []
   instance_labels = {
-    "dept" = "test"
-    "env" = "prod"
-    "product" = "prod"
+    "aaa" = "test1"
+    "bbb" = "test2"
+    "ccc" = "test3"
   }
   boot_disk_image_name    = "debian-cloud/debian-10"
   boot_disk_size = "50"

@@ -1,4 +1,4 @@
-module "google_compute_instance" {
+module "ian-test" {
   source = "../../module/google_compute_instance"
 
   project_id = ""
